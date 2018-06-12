@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "convert WSD into ALPS",
   "main": "index.js",
+  "bin" : {
+    "wsd2alps" : "index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
