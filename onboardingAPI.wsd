@@ -1,0 +1,9 @@
+home->+WIP: startOnboarding
+WIP->+customerData: collectCustomerData
+customerData-->-WIP: saveToWIP
+WIP->+accountData: collectAccountData
+accountData-->-WIP:saveToWIP
+WIP-->+finalizeWIP:completeOnboarding
+finalizeWIP->-home:goHome
+WIP-->+cancelWIP:abandonOnboarding
+cancelWIP->-home:goHome

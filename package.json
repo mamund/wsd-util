@@ -1,0 +1,25 @@
+{
+  "name": "wsd-util",
+  "version": "1.0.0",
+  "description": "convert WSD into ALPS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "WSD",
+    "WebSequenceDiagram",
+    "ALPS",
+    "Application-Level",
+    "Profile",
+    "Semantics",
+    "API",
+    "HTTP",
+    "REST"
+  ],
+  "author": "Mike Amundsen",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.15.1"
+  }
+}
