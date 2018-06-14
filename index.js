@@ -16,53 +16,37 @@ program
 
 // main routine
 function wsd2alps(file) {
-  var wsd, lines;
-  var actions = [];
-  var resources = [];
-  var arcs = []
-  var i,x,z,tmp;
-  var alps = {};
+  var wsd;
+  var parse = {actions:[], arcs:[], resources:[], lines:[], alps:{}}
 
-  // read the file
-  console.log("wsd:");
   wsd = fs.readFileSync(file, 'utf8');
-  console.log(wsd);
-
-  // parse the lines
-  lines = wsd.split('\n');
-  for(i=0,x=lines.length;i<x;i++) {
-    z = lines[i].indexOf(':');
-    if(z!==-1) {
-      tmp = lines[i].substring(0,z).trim();
-      arcs.push(tmp);
-      actions = pushNew(actions,lines[i].substring(z+1).trim()+"|"+(tmp.indexOf("--")!==-1?"unsafe":"safe"));
-    }
-  }
-
-  // clean up the arcs
-  resources = cleanArcs(arcs);
-
-  // build alps document
-  alps = buildAlps(file, resources, actions);
-
-  console.log(JSON.stringify(alps,null,2));
-
-  /*
-  // echo for debugging
-  console.log("resources:");
-  for(i=0,x=resources.length;i<x;i++) {
-    console.log(resources[i]);
-  }
-  console.log("actions:");
-  for(i=0,x=actions.length;i<x;i++) {
-    console.log(actions[i]);
-  }
-  */
+  parseLines(wsd,parse);
+  cleanArcs(parse);
+  buildAlps(file, parse);
+  writeAlps(file, parse);
 }
 
-function buildAlps(file, resources, actions) {
+
+// write out results
+function writeAlps(file, parse) {
+  var afile = file.replace(".wsd","-alps.json");
+  fs.writeFile(afile,JSON.stringify(parse.alps,null,2), function(err) {
+    if(err) {
+      console.log(err);
+    }
+    else {
+      console.log(afile + " written.");
+    }
+  });
+}
+
+// compose ALPS doc
+function buildAlps(file, parse) {
   var rtn = {};
   var i, x, d, z;
+  var actions = parse.actions;
+  var resources = parse.resources;
+
   rtn.alps = {};
   rtn.alps.version = "1.0";
   rtn.alps.title = file;
@@ -81,14 +65,38 @@ function buildAlps(file, resources, actions) {
     d = {id : actions[i].substring(0,z), type : actions[i].substring(z+1), rtn  : ""}
     rtn.alps.descriptors.push(d);
   }
-  return rtn;
+  parse.alps = rtn;
+  return parse;
+}
+
+// break into lines
+function parseLines(wsd, parse) {
+  var lines = [];
+  var arcs = [];
+  var actions = [];
+  var i, x, z, tmp;
+
+  // parse the lines
+  lines = wsd.split('\n');
+  for(i=0,x=lines.length;i<x;i++) {
+    z = lines[i].indexOf(':');
+    if(z!==-1) {
+      tmp = lines[i].substring(0,z).trim();
+      arcs.push(tmp);
+      actions = pushNew(actions,lines[i].substring(z+1).trim()+"|"+(tmp.indexOf("--")!==-1?"unsafe":"safe"));
+    }
+  }
+  parse.arcs = arcs;
+  parse.actions = actions;
+  return parse;
 }
 
 // clean up arcs as resources
-function cleanArcs(arcs) {
+function cleanArcs(parse) {
   var i,x,w,y,z,tmp;
   var blocks = ["-->+","->+","-->-","->-"];
   var resources = [];
+  var arcs = parse.arcs;
 
   for(i=0,x=arcs.length;i<x;i++) {
     tmp = arcs[i].trim();
@@ -104,10 +112,10 @@ function cleanArcs(arcs) {
       }
     }
   }
-  return resources;
+  parse.resources = resources;
 }
 
-// utility function
+// unique array member function
 function pushNew(array,value) {
   var i,x;
   var exists = false;
