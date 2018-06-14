@@ -6,6 +6,8 @@
  * mamund
  */
 
+"use strict";
+
 var program = require('commander');
 var fs = require('fs');
 
