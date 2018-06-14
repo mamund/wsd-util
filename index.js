@@ -19,11 +19,12 @@ program
 // main routine
 function wsd2alps(file) {
   var wsd;
-  var parse = {actions:[], arcs:[], resources:[], lines:[], alps:{}}
+  var parse = {actions:[], arcs:[], resources:[], lines:[], args:[], alps:{}}
 
   wsd = fs.readFileSync(file, 'utf8');
   parseLines(wsd,parse);
   cleanArcs(parse);
+  checkForArgs(parse);
   buildAlps(file, parse);
   writeAlps(file, parse);
 }
@@ -46,6 +47,7 @@ function writeAlps(file, parse) {
 function buildAlps(file, parse) {
   var rtn = {};
   var i, x, d, z;
+  var args = parse.args;
   var actions = parse.actions;
   var resources = parse.resources;
 
@@ -54,6 +56,12 @@ function buildAlps(file, parse) {
   rtn.alps.title = file;
   rtn.alps.doc = {type : "text", value : "ALPS document for " + file};
   rtn.alps.descriptors = [];
+
+  // handle properties
+  for(i=0,x=args.length;i<x;i++) {
+    d = {id:args[i], type:"semantic"};
+    rtn.alps.descriptors.push(d);
+  }
 
   // handle resources
   for(i=0,x=resources.length;i<x;i++) {
@@ -71,25 +79,30 @@ function buildAlps(file, parse) {
   return parse;
 }
 
-// break into lines
-function parseLines(wsd, parse) {
-  var lines = [];
-  var arcs = [];
-  var actions = [];
-  var i, x, z, tmp;
+// check for action args
+function checkForArgs(parse) {
+  var i,x,z,y,w,q,a,tmp;
+  var args = [];
+  var arr = [];
+  var actions = parse.actions;
 
-  // parse the lines
-  lines = wsd.split('\n');
-  for(i=0,x=lines.length;i<x;i++) {
-    z = lines[i].indexOf(':');
+  for(i=0,x=actions.length;i<x;i++) {
+    tmp = actions[i];
+    z = tmp.indexOf('(');
     if(z!==-1) {
-      tmp = lines[i].substring(0,z).trim();
-      arcs.push(tmp);
-      actions = pushNew(actions,lines[i].substring(z+1).trim()+"|"+(tmp.indexOf("--")!==-1?"unsafe":"safe"));
+      y = tmp.indexOf(')');
+      if(y!==-1) {
+        a = tmp.substring(z+1,y);
+        arr = a.split(',');
+        for(w=0,q=arr.length;w<q;w++) {
+          args = pushNew(args,arr[w]);
+        }
+        actions[i] = actions[i].replace(tmp.substring(z,y+1),"");
+      }
     }
   }
-  parse.arcs = arcs;
-  parse.actions = actions;
+  //parse.actions = actions;
+  parse.args = args;
   return parse;
 }
 
@@ -115,6 +128,28 @@ function cleanArcs(parse) {
     }
   }
   parse.resources = resources;
+}
+
+// break into lines
+function parseLines(wsd, parse) {
+  var lines = [];
+  var arcs = [];
+  var actions = [];
+  var i, x, z, tmp;
+
+  // parse the lines
+  lines = wsd.split('\n');
+  for(i=0,x=lines.length;i<x;i++) {
+    z = lines[i].indexOf(':');
+    if(z!==-1) {
+      tmp = lines[i].substring(0,z).trim();
+      arcs.push(tmp);
+      actions = pushNew(actions,lines[i].substring(z+1).trim()+"|"+(tmp.indexOf("--")!==-1?"unsafe":"safe"));
+    }
+  }
+  parse.arcs = arcs;
+  parse.actions = actions;
+  return parse;
 }
 
 // unique array member function

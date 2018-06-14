@@ -8,6 +8,26 @@
     },
     "descriptors": [
       {
+        "id": "identifier",
+        "type": "semantic"
+      },
+      {
+        "id": "name",
+        "type": "semantic"
+      },
+      {
+        "id": "email",
+        "type": "semantic"
+      },
+      {
+        "id": "region",
+        "type": "semantic"
+      },
+      {
+        "id": "discount",
+        "type": "semantic"
+      },
+      {
         "id": "home",
         "type": "group"
       },
@@ -49,6 +69,11 @@
       {
         "id": "collectAccountData",
         "type": "safe",
+        "rtn": ""
+      },
+      {
+        "id": "saveToWIP",
+        "type": "unsafe",
         "rtn": ""
       },
       {
