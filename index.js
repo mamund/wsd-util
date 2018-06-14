@@ -69,6 +69,13 @@ function buildAlps(file, resources, actions) {
   rtn.alps.doc = {type : "text", value : "ALPS document for " + file};
   rtn.alps.descriptors = [];
 
+  // handle resources
+  for(i=0,x=resources.length;i<x;i++) {
+    d = {id: resources[i], type : "group"}
+    rtn.alps.descriptors.push(d);
+  }
+
+  // handle actions
   for(i=0,x=actions.length;i<x;i++) {
     z = actions[i].indexOf("|");
     d = {id : actions[i].substring(0,z), type : actions[i].substring(z+1), rtn  : ""}
