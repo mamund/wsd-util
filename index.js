@@ -46,10 +46,12 @@ function writeAlps(file, parse) {
 // compose ALPS doc
 function buildAlps(file, parse) {
   var rtn = {};
-  var i, x, d, z;
+  var i, x, d, z, q, r, w, y;
   var args = parse.args;
   var actions = parse.actions;
   var resources = parse.resources;
+  var act,arg,type;
+  var arr = [];
 
   rtn.alps = {};
   rtn.alps.version = "1.0";
@@ -72,7 +74,22 @@ function buildAlps(file, parse) {
   // handle actions
   for(i=0,x=actions.length;i<x;i++) {
     z = actions[i].indexOf("|");
-    d = {id : actions[i].substring(0,z), type : actions[i].substring(z+1), rtn  : ""}
+    act = actions[i].substring(0,z);
+    type = actions[i].substring(z+1);
+    arr = [];
+    if(act.indexOf('(')!==-1) {
+      q=act.indexOf('(');
+      r=act.indexOf(')');
+      arr = act.substring(q+1,r).split(',');
+      act = act.replace(act.substring(q,r+1),"");
+    }
+    d = {id : act, type : type, rtn  : ""}
+    if(arr.length!==0) {
+      d.descriptors = [];
+      for(w=0,y=arr.length;w<y;w++) {
+        d.descriptors.push({href:"#"+arr[w]});
+      }
+    }
     rtn.alps.descriptors.push(d);
   }
   parse.alps = rtn;
@@ -97,11 +114,9 @@ function checkForArgs(parse) {
         for(w=0,q=arr.length;w<q;w++) {
           args = pushNew(args,arr[w]);
         }
-        actions[i] = actions[i].replace(tmp.substring(z,y+1),"");
       }
     }
   }
-  //parse.actions = actions;
   parse.args = args;
   return parse;
 }

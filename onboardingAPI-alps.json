@@ -54,32 +54,86 @@
       {
         "id": "startOnboarding",
         "type": "safe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          }
+        ]
       },
       {
         "id": "collectCustomerData",
         "type": "safe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          },
+          {
+            "href": "#name"
+          },
+          {
+            "href": "#email"
+          }
+        ]
       },
       {
         "id": "saveToWIP",
         "type": "unsafe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          },
+          {
+            "href": "#name"
+          },
+          {
+            "href": "#email"
+          }
+        ]
       },
       {
         "id": "collectAccountData",
         "type": "safe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          },
+          {
+            "href": "#region"
+          },
+          {
+            "href": "#discount"
+          }
+        ]
       },
       {
         "id": "saveToWIP",
         "type": "unsafe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          },
+          {
+            "href": "#region"
+          },
+          {
+            "href": "#discount"
+          }
+        ]
       },
       {
         "id": "completeOnboarding",
         "type": "unsafe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          }
+        ]
       },
       {
         "id": "goHome",
@@ -89,7 +143,12 @@
       {
         "id": "abandonOnboarding",
         "type": "unsafe",
-        "rtn": ""
+        "rtn": "",
+        "descriptors": [
+          {
+            "href": "#identifier"
+          }
+        ]
       }
     ]
   }
