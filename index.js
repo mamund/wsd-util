@@ -14,19 +14,17 @@ program
   .action(function(file){wsd2alps(file)})
   .parse(process.argv);
 
-
+// main routine
 function wsd2alps(file) {
   var wsd, lines;
   var actions = [];
   var resources = [];
   var arcs = []
-  var i,x,z,w,y;
-  var tmp;
+  var i,x,z;
 
   // read the file
   console.log("wsd:");
   wsd = fs.readFileSync(file, 'utf8');
-
   console.log(wsd);
 
   // parse the lines
@@ -39,8 +37,26 @@ function wsd2alps(file) {
     }
   }
 
-  // clean up arcs as resources
-  blocks = ["-->+","->+","-->-","->-"];
+  // clean up the arcs
+  resources = cleanArcs(arcs);
+
+  // echo for debugging
+  console.log("resources:");
+  for(i=0,x=resources.length;i<x;i++) {
+    console.log(resources[i]);
+  }
+  console.log("actions:");
+  for(i=0,x=actions.length;i<x;i++) {
+    console.log(actions[i]);
+  }
+}
+
+// clean up arcs as resources
+function cleanArcs(arcs) {
+  var i,x,w,y,z,tmp;
+  var blocks = ["-->+","->+","-->-","->-"];
+  var resources = [];
+
   for(i=0,x=arcs.length;i<x;i++) {
     tmp = arcs[i].trim();
     if(tmp.length!==0)  {
@@ -55,16 +71,7 @@ function wsd2alps(file) {
       }
     }
   }
-
-  // echo for debugging
-  console.log("resources:");
-  for(i=0,x=resources.length;i<x;i++) {
-    console.log(resources[i]);
-  }
-  console.log("actions:");
-  for(i=0,x=actions.length;i<x;i++) {
-    console.log(actions[i]);
-  }
+  return resources;
 }
 
 // utility function
