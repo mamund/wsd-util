@@ -21,6 +21,7 @@ function wsd2alps(file) {
   var resources = [];
   var arcs = []
   var i,x,z;
+  var alps = {};
 
   // read the file
   console.log("wsd:");
@@ -40,6 +41,12 @@ function wsd2alps(file) {
   // clean up the arcs
   resources = cleanArcs(arcs);
 
+  // build alps document
+  alps = buildAlps(file, resources, actions);
+
+  console.log(JSON.stringify(alps,null,2));
+
+  /*
   // echo for debugging
   console.log("resources:");
   for(i=0,x=resources.length;i<x;i++) {
@@ -49,6 +56,23 @@ function wsd2alps(file) {
   for(i=0,x=actions.length;i<x;i++) {
     console.log(actions[i]);
   }
+  */
+}
+
+function buildAlps(file, resources, actions) {
+  var rtn = {};
+  var i, x, d;
+  rtn.alps = {};
+  rtn.alps.version = "1.0";
+  rtn.alps.title = file;
+  rtn.alps.doc = {type : "text", value : "ALPS document for " + file};
+  rtn.alps.descriptors = [];
+
+  for(i=0,x=actions.length;i<x;i++) {
+    d = {id : actions[i], type : "safe", rtn  : ""}
+    rtn.alps.descriptors.push(d);
+  }
+  return rtn;
 }
 
 // clean up arcs as resources
@@ -89,3 +113,5 @@ function pushNew(array,value) {
   }
   return array;
 }
+
+
