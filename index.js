@@ -20,7 +20,7 @@ function wsd2alps(file) {
   var actions = [];
   var resources = [];
   var arcs = []
-  var i,x,z;
+  var i,x,z,tmp;
   var alps = {};
 
   // read the file
@@ -33,8 +33,9 @@ function wsd2alps(file) {
   for(i=0,x=lines.length;i<x;i++) {
     z = lines[i].indexOf(':');
     if(z!==-1) {
-      arcs.push(lines[i].substring(0,z).trim());
-      actions = pushNew(actions,lines[i].substring(z+1).trim());
+      tmp = lines[i].substring(0,z).trim();
+      arcs.push(tmp);
+      actions = pushNew(actions,lines[i].substring(z+1).trim()+"|"+(tmp.indexOf("--")!==-1?"unsafe":"safe"));
     }
   }
 
@@ -61,7 +62,7 @@ function wsd2alps(file) {
 
 function buildAlps(file, resources, actions) {
   var rtn = {};
-  var i, x, d;
+  var i, x, d, z;
   rtn.alps = {};
   rtn.alps.version = "1.0";
   rtn.alps.title = file;
@@ -69,7 +70,8 @@ function buildAlps(file, resources, actions) {
   rtn.alps.descriptors = [];
 
   for(i=0,x=actions.length;i<x;i++) {
-    d = {id : actions[i], type : "safe", rtn  : ""}
+    z = actions[i].indexOf("|");
+    d = {id : actions[i].substring(0,z), type : actions[i].substring(z+1), rtn  : ""}
     rtn.alps.descriptors.push(d);
   }
   return rtn;
